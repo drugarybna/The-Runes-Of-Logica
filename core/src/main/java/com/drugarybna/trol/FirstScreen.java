@@ -3,13 +3,17 @@ package com.drugarybna.trol;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ray3k.stripe.FreeTypeSkin;
 
 import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.Gdx.graphics;
 
 public class FirstScreen implements Screen {
 
@@ -26,12 +30,13 @@ public class FirstScreen implements Screen {
 
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.right();
-        mainTable.padRight(100);
+        mainTable.left();
+        mainTable.padLeft(64);
         stage.addActor(mainTable);
 
         ImageButton title = new ImageButton(skin, "default");
         TextButton buttonPlay = new TextButton("Play", skin);
+        TextButton buttonSettings = new TextButton("Config", skin);
         TextButton buttonExit = new TextButton("Exit", skin);
         buttonExit.addListener(new ClickListener() {
             @Override
@@ -40,13 +45,20 @@ public class FirstScreen implements Screen {
             }
         });
 
-        mainTable.add(title).right().width(360).height(194);
-        mainTable.row().padTop(50);
-        mainTable.add(buttonPlay).right().width(130).height(50);
-        mainTable.row().padTop(20);
-        mainTable.add(buttonExit).right().width(130).height(50);
+        mainTable.add(title).left().width(360).height(194);
+        mainTable.row().padTop(44);
+        mainTable.add(buttonPlay).left().width(130).height(50);
+        mainTable.row().padTop(12);
+        mainTable.add(buttonSettings).left().width(130).height(50);
+        mainTable.row().padTop(12);
+        mainTable.add(buttonExit).left().width(130).height(50);
 
         Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+
+        Texture background = new Texture("skin/bg.png");
+        TextureRegion backgroundRegion = new TextureRegion(background, 4096-1920-512, 4096-1080, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainTable.setBackground(new TextureRegionDrawable(backgroundRegion));
 
     }
 
