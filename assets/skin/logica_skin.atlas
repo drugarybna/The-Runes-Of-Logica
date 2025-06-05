@@ -1,0 +1,56 @@
+
+logica_skin.png
+size: 1024, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+Title_Hover
+  rotate: false
+  xy: 1, 595
+  size: 720, 388
+  orig: 720, 388
+  offset: 0, 0
+  index: -1
+Title_Hover (1)
+  rotate: false
+  xy: 1, 205
+  size: 720, 388
+  orig: 720, 388
+  offset: 0, 0
+  index: -1
+Button_Hover
+  rotate: false
+  xy: 1, 103
+  size: 260, 100
+  split: 0, 0, 0, 0
+  pad: 9, 9, 8, 9
+  orig: 260, 100
+  offset: 0, 0
+  index: -1
+PixelButton
+  rotate: false
+  xy: 723, 781
+  size: 260, 100
+  split: 0, 0, 0, 0
+  pad: 26, 22, 12, 11
+  orig: 260, 100
+  offset: 0, 0
+  index: -1
+PixelButton_Hover
+  rotate: false
+  xy: 1, 1
+  size: 260, 100
+  split: 0, 0, 0, 0
+  pad: 29, 24, 13, 17
+  orig: 260, 100
+  offset: 0, 0
+  index: -1
+Button
+  rotate: false
+  xy: 723, 883
+  size: 260, 100
+  split: 0, 0, 0, 0
+  pad: 9, 8, 8, 9
+  orig: 260, 100
+  offset: 0, 0
+  index: -1
