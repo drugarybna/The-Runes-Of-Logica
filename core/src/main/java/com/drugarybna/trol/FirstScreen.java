@@ -38,6 +38,14 @@ public class FirstScreen implements Screen {
         TextButton buttonPlay = new TextButton("Play", skin);
         TextButton buttonSettings = new TextButton("Config", skin);
         TextButton buttonExit = new TextButton("Exit", skin);
+
+        buttonPlay.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Runes) Gdx.app.getApplicationListener()).setScreen(new FirstLocation());
+            }
+        });
+
         buttonExit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -101,6 +109,7 @@ public class FirstScreen implements Screen {
     public void dispose() {
 
         stage.dispose();
+        skin.dispose();
 
     }
 }
