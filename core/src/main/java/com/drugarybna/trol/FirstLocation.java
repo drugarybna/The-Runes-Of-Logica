@@ -23,6 +23,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -108,13 +110,8 @@ public class FirstLocation implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!isPaused) {
-            logic(v);
-            input(v);
-        }
-
-        camera.update();
         viewport.apply();
+        camera.update();
 
         renderer.setView(camera);
         renderer.render(new int[] {0, 1, 2, 3});
@@ -126,7 +123,7 @@ public class FirstLocation implements Screen {
         renderOverlayObjects(false);
         batch.end();
 
-        Gdx.gl.glEnable(GL20.GL_BLEND);
+        /*Gdx.gl.glEnable(GL20.GL_BLEND);
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 0, 0, 0.5f);
@@ -138,13 +135,37 @@ public class FirstLocation implements Screen {
             shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
         }
         shapeRenderer.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glDisable(GL20.GL_BLEND);*/
 
         renderer.render(new int[] {5, 7, 8});
+
+        if (!isPaused) {
+            logic(v);
+            input(v);
+            drawTileHover();
+        }
 
         stage.getViewport().apply();
         stage.act();
         stage.draw();
+
+    }
+
+    private void drawTileHover() {
+
+        Vector3 cursorPos = viewport.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+        float x = (float) Math.floor(cursorPos.x);
+        float y = (float) Math.floor(cursorPos.y);
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glLineWidth(12f);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(2.28f, 2.28f, 2.28f, 0.2f);
+        shapeRenderer.rect(x, y, 1, 1);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
     }
 
