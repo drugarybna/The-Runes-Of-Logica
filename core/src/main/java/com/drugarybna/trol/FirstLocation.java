@@ -39,6 +39,8 @@ public class FirstLocation implements Screen {
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
 
+    private FitViewport viewport;
+
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
 
@@ -64,8 +66,8 @@ public class FirstLocation implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / 16f);
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 16, 9);
-        camera.update();
+        viewport = new FitViewport(16, 9, camera);
+        viewport.apply();
 
         skin = new FreeTypeSkin(Gdx.files.internal("skin/logica_skin.json"));
 
@@ -110,6 +112,9 @@ public class FirstLocation implements Screen {
             logic(v);
             input(v);
         }
+
+        camera.update();
+        viewport.apply();
 
         renderer.setView(camera);
         renderer.render(new int[] {0, 1, 2, 3});
@@ -298,6 +303,7 @@ public class FirstLocation implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        viewport.update(width, height, true);
     }
 
     @Override
