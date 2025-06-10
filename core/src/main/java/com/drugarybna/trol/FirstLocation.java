@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapGroupLayer;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -29,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -77,8 +75,7 @@ public class FirstLocation implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         coordinatesLabel = new Label("", skin);
-        coordinatesLabel.setPosition(10, Gdx.graphics.getHeight() - 30);
-        coordinatesLabel.setFontScale(1.5f);
+        coordinatesLabel.setPosition(10, Gdx.graphics.getHeight() - 100);
         stage.addActor(coordinatesLabel);
 
         pauseMenuWindow = new Window("Pause", skin);
@@ -137,7 +134,7 @@ public class FirstLocation implements Screen {
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);*/
 
-        renderer.render(new int[] {5, 7, 8});
+        renderer.render(new int[] {4, 6, 7});
 
         if (!isPaused) {
             logic(v);
@@ -153,17 +150,14 @@ public class FirstLocation implements Screen {
 
     private void drawTileHover() {
 
-        Vector3 cursorPos = viewport.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-
-        float x = (float) Math.floor(cursorPos.x);
-        float y = (float) Math.floor(cursorPos.y);
+        Vector2 cursorPos = getCursorPos();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glLineWidth(12f);
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(2.28f, 2.28f, 2.28f, 0.2f);
-        shapeRenderer.rect(x, y, 1, 1);
+        shapeRenderer.rect(cursorPos.x, cursorPos.y, 1, 1);
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -195,8 +189,62 @@ public class FirstLocation implements Screen {
 
     private void logic(float delta) {
 
-        coordinatesLabel.setText("Coordinates: " + (int) mainCharacter.position.x + ", " + (int) mainCharacter.position.y);
+        coordinatesLabel.setText("Coordinates: " + (int) getCursorPos().x + ", " + (int) getCursorPos().y);
 
+        selectItem();
+
+    }
+
+    private void selectItem() {
+        Vector2 cursorPos = getCursorPos();
+
+        MapLayer interactiveLayer = map.getLayers().get("InteractiveObjects");
+        for (MapObject object : interactiveLayer.getObjects()) {
+            float objX = (float) object.getProperties().get("x") / 16;
+            float objY = (float) object.getProperties().get("y") / 16;
+            if (cursorPos.x == objX && cursorPos.y == objY) {
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                    isPaused = true;
+                    newInteractiveWindow();
+                }
+            }
+        }
+    }
+
+    private void newInteractiveWindow() {
+        Window interactiveWindow = new Window("Altar of Wisdom", skin);
+        stage.addActor(interactiveWindow);
+        interactiveWindow.left().top().padTop(64);
+        Label interactiveLabel = new Label("Here is simple example of text \nthat can be written in this section \nlike storyline or something you know.", skin);
+        interactiveLabel.setFontScale(0.85f);
+        interactiveWindow.add(interactiveLabel);
+        interactiveWindow.setSize(interactiveLabel.getWidth(), interactiveLabel.getHeight()+64);
+        interactiveWindow.setPosition((float) Gdx.graphics.getWidth() /2 - interactiveWindow.getWidth()/2,
+            (float) Gdx.graphics.getHeight() /2 - interactiveWindow.getHeight()/2);
+        Image dimBackground = new Image(new TextureRegion(new Texture(Gdx.files.internal("dim_bg.png"))));
+        dimBackground.setColor(0, 0, 0, 0.5f);
+        dimBackground.setFillParent(true);
+        dimBackground.setVisible(false);
+        stage.addActor(dimBackground);
+        dimBackground.setVisible(true);
+        dimBackground.setZIndex(0);
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = false;
+                interactiveWindow.setVisible(false);
+                dimBackground.setVisible(false);
+            }
+        });
+    }
+
+    private Vector2 getCursorPos() {
+        Vector3 cursorPos = viewport.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+        float x = (float) Math.floor(cursorPos.x);
+        float y = (float) Math.floor(cursorPos.y);
+
+        return new Vector2(x, y);
     }
 
     private void input(float delta) {
