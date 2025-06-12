@@ -189,7 +189,7 @@ public class FirstLocation implements Screen {
 
     private void logic(float delta) {
 
-        coordinatesLabel.setText("Coordinates: " + (int) getCursorPos().x + ", " + (int) getCursorPos().y);
+        //coordinatesLabel.setText("Coordinates: " + (int) getCursorPos().x + ", " + (int) getCursorPos().y);
 
         selectItem();
 
@@ -199,26 +199,45 @@ public class FirstLocation implements Screen {
         Vector2 cursorPos = getCursorPos();
 
         MapLayer interactiveLayer = map.getLayers().get("InteractiveObjects");
-        for (MapObject object : interactiveLayer.getObjects()) {
-            float objX = (float) object.getProperties().get("x") / 16;
-            float objY = (float) object.getProperties().get("y") / 16;
-            if (cursorPos.x == objX && cursorPos.y == objY) {
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                    isPaused = true;
-                    newInteractiveWindow();
-                }
+        MapObject panelStoryline = interactiveLayer.getObjects().get("Panel_Storyline");
+        MapObject itemHint = interactiveLayer.getObjects().get("Item_Hint");
+        MapObject zonePuzzle = interactiveLayer.getObjects().get("Zone_Puzzle");
+
+        if (cursorPos.x == (float) panelStoryline.getProperties().get("x") / 16 && cursorPos.y == (float) panelStoryline.getProperties().get("y") / 16) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                isPaused = true;
+                newInteractiveWindow("Altar of Wisdom", """
+                    Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et
+                    dolore magna aliqua.
+                """);
             }
         }
+
+        if (cursorPos.x == (float) itemHint.getProperties().get("x") / 16 && cursorPos.y == (float) itemHint.getProperties().get("y") / 16) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                isPaused = true;
+                newInteractiveWindow("Scroll of knowledge", """
+                    Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et
+                    dolore magna aliqua.
+                """);
+            }
+        }
+
     }
 
-    private void newInteractiveWindow() {
-        Window interactiveWindow = new Window("Altar of Wisdom", skin);
+    private void newInteractiveWindow(String title, String description) {
+        Window interactiveWindow = new Window(title, skin);
+        interactiveWindow.setMovable(false);
         stage.addActor(interactiveWindow);
         interactiveWindow.left().top().padTop(64);
-        Label interactiveLabel = new Label("Here is simple example of text \nthat can be written in this section \nlike storyline or something you know.", skin);
+        Label interactiveLabel = new Label(description, skin);
         interactiveLabel.setFontScale(0.85f);
         interactiveWindow.add(interactiveLabel);
-        interactiveWindow.setSize(interactiveLabel.getWidth(), interactiveLabel.getHeight()+64);
+        interactiveWindow.setSize(interactiveLabel.getWidth(), interactiveLabel.getHeight()+112+130);
         interactiveWindow.setPosition((float) Gdx.graphics.getWidth() /2 - interactiveWindow.getWidth()/2,
             (float) Gdx.graphics.getHeight() /2 - interactiveWindow.getHeight()/2);
         Image dimBackground = new Image(new TextureRegion(new Texture(Gdx.files.internal("dim_bg.png"))));
@@ -228,7 +247,10 @@ public class FirstLocation implements Screen {
         stage.addActor(dimBackground);
         dimBackground.setVisible(true);
         dimBackground.setZIndex(0);
-        stage.addListener(new ClickListener() {
+        TextButton resumeButton = new TextButton("Resume", skin);
+        interactiveWindow.row().padTop(16);
+        interactiveWindow.add(resumeButton);
+        resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
