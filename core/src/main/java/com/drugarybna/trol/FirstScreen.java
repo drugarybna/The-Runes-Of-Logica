@@ -61,8 +61,8 @@ public class FirstScreen implements Screen {
         mainTable.row().padTop(12);
         mainTable.add(buttonExit).left().width(130).height(50);
 
-        Gdx.graphics.setWindowedMode(1280, 720);
-//        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        //Gdx.graphics.setWindowedMode(1280, 720);
+        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
         Texture background = new Texture("skin/bg.png");
